@@ -1,0 +1,22 @@
+.emailInput {
+  width: 800px;
+  max-width: 90%;
+  margin: 80px auto;
+  border: 1px solid rgb(252, 251, 251);
+  border-radius: 10px;
+  box-shadow: 3px 4px 15px rgb(232, 229, 229);
+  padding: 10px;
+}
+.input {
+  /* border-style:"hidden",   */
+  border: 1px solid white;
+  width: 80%;
+  /* border-bottom: 1px solid gray; */
+  margin: 10px;
+}
+.input:focus {
+  outline: none;
+}
+.editor {
+  margin: 10px;
+}

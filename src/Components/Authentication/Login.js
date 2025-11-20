@@ -2,51 +2,17 @@ import { useState } from "react";
 import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Button, Card } from "react-bootstrap";
+import { AuthAction } from "../../Redux store/AuthSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // async function getValidIdToken() {
-  //   const refreshToken = localStorage.getItem("refreshToken");
-  //   if (!refreshToken) return null;
-
-  //   const res = await fetch(
-  //     "https://securetoken.googleapis.com/v1/token?key=AIzaSyCdDyLfXnyTrvbTA4whPdjq4GY3KqZ8dWc",
-  //     {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-  //       body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
-  //     }
-  //   );
-  //   const data = await res.json();
-
-  //   if (!res.ok) throw new Error(data.error?.message || "Token refresh failed");
-
-  //   localStorage.setItem("token", data.id_token);
-  //   localStorage.setItem("refreshToken", data.refresh_token);
-  //   localStorage.setItem("tokenExpiry", Date.now() + data.expires_in * 1000);
-
-  //   dispatch(AuthAction.setIdToken(data.id_token));
-
-  //   return data.id_token;
-  // }
-
-  // function scheduleTokenRefresh() {
-  //   const expiry = parseInt(localStorage.getItem("tokenExpiry"), 10);
-  //   const timeout = expiry - Date.now() - 30000; // 30s before expiry
-
-  //   if (timeout > 0) {
-  //     setTimeout(async () => {
-  //       await getValidIdToken();
-  //       scheduleTokenRefresh();
-  //     }, timeout);
-  //   }
-  // }
 
   const loginHandler = async (e) => {
     e.preventDefault();
@@ -70,10 +36,9 @@ const Login = () => {
       }
 
       localStorage.setItem("token", data.idToken);
-      // localStorage.setItem("refreshToken", data.refreshToken);
-      // localStorage.setItem("tokenExpiry", Date.now() + data.expiresIn * 1000);
 
-      // scheduleTokenRefresh();
+      dispatch(AuthAction.login(data));
+
       navigate("/UserProfile");
     } catch (err) {
       setError(err.message);

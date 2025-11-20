@@ -9,10 +9,10 @@ jest.mock("react-router-dom", () => ({
 }));
 
 // Mock VerifyEmail
-jest.mock("./VerifyEmail", () => jest.fn());
+jest.mock("../Authentication/VerifyEmail", () => jest.fn());
 
-import SignUp from "./SignUp";
-import VerifyEmail from "./VerifyEmail";
+import SignUp from "../Authentication/SignUp";
+import VerifyEmail from "../Authentication/VerifyEmail";
 
 beforeEach(() => {
   jest.clearAllMocks();

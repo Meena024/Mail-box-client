@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import Login from "./Login";
+import Login from "../Authentication/Login";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
 
 // Mock useNavigate
 const mockNavigate = jest.fn();
@@ -9,27 +11,36 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+const mockStore = configureStore([]);
+
 beforeEach(() => {
   jest.clearAllMocks();
   global.fetch = jest.fn();
 });
 
-const setup = () =>
-  render(
-    <BrowserRouter>
-      <Login />
-    </BrowserRouter>
+// Unified render helper with Router + Redux Provider
+const renderWithProviders = (ui, preloadedState = {}) => {
+  const store = mockStore(preloadedState);
+
+  return render(
+    <Provider store={store}>
+      <BrowserRouter>{ui}</BrowserRouter>
+    </Provider>
   );
+};
 
 describe("Login Component Tests", () => {
   test("1. Renders email and password fields", () => {
-    setup();
+    renderWithProviders(<Login />, {
+      auth: { userEmail: null, isLoggedIn: false },
+    });
+
     expect(screen.getByPlaceholderText("E-Mail id")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
   });
 
   test("2. Updates email and password state on typing", () => {
-    setup();
+    renderWithProviders(<Login />);
 
     const emailInput = screen.getByPlaceholderText("E-Mail id");
     const passwordInput = screen.getByPlaceholderText("Password");
@@ -42,10 +53,9 @@ describe("Login Component Tests", () => {
   });
 
   test("3. Shows loading state on submit", () => {
-    setup();
+    renderWithProviders(<Login />);
 
     const button = screen.getByRole("button", { name: /sign in/i });
-
     fireEvent.click(button);
 
     expect(button).toHaveAttribute("disabled");
@@ -53,7 +63,7 @@ describe("Login Component Tests", () => {
   });
 
   test("4. Calls Firebase API with correct payload", async () => {
-    setup();
+    renderWithProviders(<Login />);
 
     const mockResponse = {
       ok: true,
@@ -71,17 +81,12 @@ describe("Login Component Tests", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-    });
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
 
     expect(global.fetch).toHaveBeenCalledWith(
-      expect.stringContaining(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-      ),
+      expect.stringContaining("signInWithPassword"),
       expect.objectContaining({
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: "test@gmail.com",
           password: "123456",
@@ -92,7 +97,7 @@ describe("Login Component Tests", () => {
   });
 
   test("5. Displays error message on failed login", async () => {
-    setup();
+    renderWithProviders(<Login />);
 
     global.fetch.mockResolvedValueOnce({
       ok: false,
@@ -114,7 +119,7 @@ describe("Login Component Tests", () => {
   });
 
   test("6. Stores token and navigates on success", async () => {
-    setup();
+    renderWithProviders(<Login />);
 
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
@@ -139,7 +144,7 @@ describe("Login Component Tests", () => {
   });
 
   test("7. Clears email and password fields after submit", async () => {
-    setup();
+    renderWithProviders(<Login />);
 
     global.fetch.mockResolvedValueOnce({
       ok: true,

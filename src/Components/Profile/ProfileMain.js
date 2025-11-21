@@ -8,6 +8,7 @@ import MenuBar from "./MenuBar";
 import Inbox from "./Email/Inbox";
 import EmailDetails from "./Email/ReceivedEmail/EmailDetails";
 import { Routes, Route } from "react-router-dom";
+import Sent from "./Email/CreateEmail/Sent";
 
 const ProfileMain = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const ProfileMain = () => {
             <Route path="inbox" element={<Inbox />} />
             <Route path="compose" element={<CreateEmail />} />
             <Route path="email/:id" element={<EmailDetails />} />
+            <Route path="sent" element={<Sent />} />
           </Routes>
         </Col>
       </Row>

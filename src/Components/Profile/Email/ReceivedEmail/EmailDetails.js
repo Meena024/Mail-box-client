@@ -7,6 +7,7 @@ import { EmailActions } from "../../../../Redux store/EmailSlice";
 const EmailDetails = () => {
   const { id } = useParams();
   const inbox = useSelector((state) => state.email.inbox);
+  const sent = useSelector((state) => state.email.sent);
   const dispatch = useDispatch();
   const userEmail = useSelector((state) => state.auth.userEmail);
 
@@ -15,22 +16,25 @@ const EmailDetails = () => {
 
   const sanitizeEmail = (email) => email.replace(/\./g, "_");
 
-  const mail = inbox.find((m) => {
-    console.log(m, id);
-    return m.id === id;
-  });
+  const mail = inbox.find((m) => m.id === id) || sent.find((m) => m.id === id);
 
   if (!mail) return <div>Email not found</div>;
+
+  const folder = inbox.some((m) => m.id === id) ? "inbox" : "sent";
 
   const deleteEmailHandler = async (mailId) => {
     const sanitizedEmail = sanitizeEmail(userEmail);
 
     try {
       await axios.delete(
-        `${firebaseURL}/emails/inbox/${sanitizedEmail}/${mailId}.json`
+        `${firebaseURL}/emails/${folder}/${sanitizedEmail}/${mailId}.json`
       );
 
-      dispatch(EmailActions.deleteEmail(mailId));
+      if (folder === "inbox") {
+        dispatch(EmailActions.deleteEmail(mailId));
+      } else {
+        dispatch(EmailActions.deleteSentEmail(mailId));
+      }
     } catch (err) {
       console.log("Delete failed", err);
     }
@@ -49,7 +53,17 @@ const EmailDetails = () => {
       </div>
 
       <div className="email-info">
-        <strong>From:</strong> {mail.from}
+        {folder === "inbox" && (
+          <div>
+            <strong>From:</strong> {mail.from}
+          </div>
+        )}
+
+        {folder === "sent" && (
+          <div>
+            <strong>To:</strong> {mail.to}
+          </div>
+        )}
       </div>
 
       <div

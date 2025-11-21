@@ -5,8 +5,12 @@ const EmailSlice = createSlice({
   initialState: {
     inbox: [],
     unreadCount: 0,
+    sent: [],
   },
   reducers: {
+    setSent(state, action) {
+      state.sent = action.payload;
+    },
     setInbox(state, action) {
       state.inbox = action.payload;
       state.unreadCount = action.payload.filter((mail) => !mail.read).length;
@@ -26,6 +30,10 @@ const EmailSlice = createSlice({
       if (mail && !mail.read) {
         state.unreadCount -= 1;
       }
+    },
+    deleteSentEmail(state, action) {
+      const id = action.payload;
+      state.sent = state.sent.filter((m) => m.id !== id);
     },
   },
 });

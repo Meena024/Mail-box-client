@@ -21,6 +21,7 @@ const MenuBar = () => {
   const handleClick = (item) => {
     if (item === "Compose") navigate("/UserProfile/compose");
     if (item === "Inbox") navigate("/UserProfile/inbox");
+    if (item === "Sent") navigate("/UserProfile/sent");
   };
 
   return (

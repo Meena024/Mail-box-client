@@ -1,9 +1,13 @@
-// EmailDetails.test.js
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import configureStore from "redux-mock-store";
 import EmailDetails from "../Profile/Email/ReceivedEmail/EmailDetails";
+
+beforeEach(() => {
+  jest.spyOn(console, "warn").mockImplementation(() => {});
+  jest.spyOn(console, "error").mockImplementation(() => {});
+});
 
 const mockStore = configureStore([]);
 
@@ -22,9 +26,9 @@ const mockInbox = [
   },
 ];
 
-const renderWithStoreAndRouter = (id, inbox = mockInbox) => {
+const renderWithStoreAndRouter = (id, inbox = mockInbox, sent = []) => {
   const store = mockStore({
-    email: { inbox },
+    email: { inbox, sent },
     auth: { userEmail: "test@gmail.com" },
   });
 

@@ -16,16 +16,23 @@ const CreateEmail = () => {
 
   const [content, setContent] = useState("");
 
-  // Convert email to Firebase-safe key
-  const sanitizeEmail = (email) => {
-    return email.replace(/\./g, "_");
+  const sanitizeEmail = (email) => email.replace(/\./g, "_");
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
 
-    const enteredTo = inputToRef.current.value;
-    const enteredSubject = inputSubjectRef.current.value;
+    const enteredTo = inputToRef.current.value.trim();
+    const enteredSubject = inputSubjectRef.current.value.trim();
+
+    if (!isValidEmail(enteredTo)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
 
     const sanitizedTo = sanitizeEmail(enteredTo);
     const sanitizedFrom = sanitizeEmail(authUserEmail);
@@ -43,19 +50,24 @@ const CreateEmail = () => {
       "https://mail-box-client-daab9-default-rtdb.firebaseio.com";
 
     try {
-      // Store in receiver inbox
       await axios.post(
         `${firebaseURL}/emails/inbox/${sanitizedTo}.json`,
         emailData
       );
 
-      // Store in sender sentbox
       await axios.post(
         `${firebaseURL}/emails/sent/${sanitizedFrom}.json`,
         emailData
       );
 
       alert("Email sent successfully!");
+
+      inputToRef.current.value = "";
+      inputSubjectRef.current.value = "";
+      setContent("");
+      if (editor.current) {
+        editor.current.value = "";
+      }
     } catch (err) {
       console.log(err);
       alert("Something went wrong.");

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import moment from "moment";
@@ -20,39 +20,59 @@ const Inbox = () => {
 
   const sanitizeEmail = (email) => email.replace(/\./g, "_");
 
-  // Fetch Emails
+  // Store previous JSON to detect changes
+  const previousDataRef = useRef(null);
+
+  const fetchEmails = async () => {
+    if (!userEmail) return;
+
+    const sanitizedEmail = sanitizeEmail(userEmail);
+
+    try {
+      const response = await axios.get(
+        `${firebaseURL}/emails/inbox/${sanitizedEmail}.json`
+      );
+
+      const data = response.data || {};
+
+      const inboxArray = Object.keys(data).map((key) => ({
+        id: key,
+        ...data[key],
+      }));
+
+      inboxArray.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      // Compare new data with previous using JSON.stringify
+      const newJSON = JSON.stringify(inboxArray);
+
+      if (previousDataRef.current !== newJSON) {
+        previousDataRef.current = newJSON;
+
+        dispatch(EmailActions.setInbox(inboxArray));
+
+        // Update unread count automatically
+        const unread = inboxArray.filter((mail) => !mail.read).length;
+        dispatch(EmailActions.setUnreadCount(unread));
+      }
+    } catch (err) {
+      console.log("Error fetching emails:", err);
+    }
+  };
+
+  // Auto refresh every 2 seconds
   useEffect(() => {
     if (!userEmail) return;
 
-    const fetchEmails = async () => {
-      setLoading(true);
-      const sanitizedEmail = sanitizeEmail(userEmail);
+    setLoading(true);
 
-      try {
-        const response = await axios.get(
-          `${firebaseURL}/emails/inbox/${sanitizedEmail}.json`
-        );
+    fetchEmails().then(() => setLoading(false));
 
-        if (response.data) {
-          const inboxArray = Object.keys(response.data).map((key) => ({
-            id: key,
-            ...response.data[key],
-          }));
+    const interval = setInterval(fetchEmails, 2000);
 
-          inboxArray.sort(
-            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-          );
-
-          dispatch(EmailActions.setInbox(inboxArray));
-        }
-      } catch (err) {
-        console.log(err);
-      }
-
-      setLoading(false);
-    };
-
-    fetchEmails();
+    return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, [userEmail, dispatch]);
 
   const openEmailHandler = async (mail) => {
@@ -90,6 +110,7 @@ const Inbox = () => {
   if (loading) {
     return <div className="inbox-loading">Loading emails...</div>;
   }
+
   return (
     <div className="inbox-container">
       <div className="inbox-header">

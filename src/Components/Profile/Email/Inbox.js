@@ -84,10 +84,12 @@ const Inbox = () => {
     }
   };
 
+  if (!userEmail) {
+    return <div className="no-emails">Please login to view your inbox.</div>;
+  }
   if (loading) {
     return <div className="inbox-loading">Loading emails...</div>;
   }
-
   return (
     <div className="inbox-container">
       <div className="inbox-header">

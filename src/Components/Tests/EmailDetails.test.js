@@ -23,7 +23,11 @@ const mockInbox = [
 ];
 
 const renderWithStoreAndRouter = (id, inbox = mockInbox) => {
-  const store = mockStore({ email: { inbox } });
+  const store = mockStore({
+    email: { inbox },
+    auth: { userEmail: "test@gmail.com" },
+  });
+
   return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[`/email/${id}`]}>

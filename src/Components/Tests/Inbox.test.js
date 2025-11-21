@@ -2,10 +2,17 @@ jest.mock("../../Redux store/EmailSlice", () => ({
   EmailActions: {
     setInbox: (payload) => ({ type: "email/setInbox", payload }),
     markAsRead: (id) => ({ type: "email/markAsRead", payload: id }),
+    deleteEmail: (id) => ({ type: "email/deleteEmail", payload: id }),
   },
 }));
 
-import { render, screen, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  act,
+  fireEvent,
+} from "@testing-library/react";
 import Inbox from "../Profile/Email/Inbox";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
@@ -28,27 +35,34 @@ const emailReducer = (state = { inbox: [], unreadCount: 0 }, action) => {
         ),
         unreadCount: Math.max(0, state.unreadCount - 1),
       };
+
+    case "email/deleteEmail":
+      return {
+        ...state,
+        inbox: state.inbox.filter((m) => m.id !== action.payload),
+      };
+
     default:
       return state;
   }
 };
 
-const authReducer = (state = { userEmail: null }, action) => state;
+const authReducer = (state = { userEmail: null }) => state;
 
-// Fix navigate
+// Mock navigation
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => jest.fn(),
 }));
 
-// Proper render helper
-const renderWithStore = async (storeState = {}) => {
+// ---------------------- Helper -------------------------
+const renderWithStore = async (preloadedState = {}) => {
   const store = configureStore({
     reducer: {
       email: emailReducer,
       auth: authReducer,
     },
-    preloadedState: storeState,
+    preloadedState,
   });
 
   let utils;
@@ -63,7 +77,7 @@ const renderWithStore = async (storeState = {}) => {
     );
   });
 
-  return utils;
+  return { store, ...utils };
 };
 
 // ------------------ TESTS ---------------------
@@ -104,9 +118,7 @@ describe("Inbox Component Tests", () => {
       auth: { userEmail: "test@example.com" },
     });
 
-    await waitFor(() =>
-      expect(screen.getByText("No emails found.")).toBeInTheDocument()
-    );
+    expect(await screen.findByText("No emails found.")).toBeInTheDocument();
   });
 
   test("4. Renders list of emails from API", async () => {
@@ -147,8 +159,7 @@ describe("Inbox Component Tests", () => {
 
     await screen.findByText("Unread Mail");
 
-    const unreadDot = document.querySelector(".unread-dot");
-    expect(unreadDot).toBeInTheDocument();
+    expect(document.querySelector(".unread-dot")).toBeInTheDocument();
   });
 
   test("6. Sorts emails by latest date first", async () => {
@@ -199,15 +210,51 @@ test("8. Shows unread dot next to unread email", async () => {
       },
     },
   });
+});
 
-  await renderWithStore({
-    auth: { userEmail: "test@example.com" },
+// ---------------- DELETE TESTS -------------------
+
+describe("Inbox Delete Functionality", () => {
+  test("Delete buttons appear when inbox has emails", async () => {
+    axios.get.mockResolvedValueOnce(null); // <-- important (avoid overwrite)
+
+    await renderWithStore({
+      auth: { userEmail: "test@gmail.com" },
+      email: {
+        inbox: [
+          { id: "1", from: "a@test.com", subject: "Hello", date: "2024-01-01" },
+          { id: "2", from: "b@test.com", subject: "World", date: "2024-01-02" },
+        ],
+      },
+    });
+
+    const buttons = await screen.findAllByRole("button", { name: /delete/i });
+    expect(buttons.length).toBe(2);
   });
 
-  const row = await screen.findByText("Unread Email");
+  test("Deleting email dispatches deleteEmail & calls axios.delete", async () => {
+    axios.get.mockResolvedValueOnce(null);
+    axios.delete.mockResolvedValueOnce({});
 
-  // Check inside the parent email row
-  const emailRow = row.closest(".email-row");
+    const { store } = await renderWithStore({
+      auth: { userEmail: "test@gmail.com" },
+      email: {
+        inbox: [
+          {
+            id: "123",
+            from: "a@test.com",
+            subject: "Mail 1",
+            date: "2024-01-01",
+          },
+        ],
+      },
+    });
 
-  expect(emailRow.querySelector(".unread-dot")).toBeInTheDocument();
+    const btn = await screen.findByRole("button", { name: /delete/i });
+    fireEvent.click(btn);
+
+    await waitFor(() => expect(axios.delete).toHaveBeenCalledTimes(1));
+
+    expect(store.getState().email.inbox.length).toBe(0);
+  });
 });

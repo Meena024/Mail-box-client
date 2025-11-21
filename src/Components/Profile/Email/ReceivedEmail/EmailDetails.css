@@ -1,0 +1,83 @@
+.email-details {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.email-details h2 {
+  margin-bottom: 15px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #222;
+}
+
+.email-info {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.email-info strong {
+  color: #000;
+}
+
+.email-body {
+  margin-top: 20px;
+  line-height: 1.6;
+  font-size: 17px;
+  color: #333;
+}
+
+/* Styling content generated from JoditEditor */
+.email-body p {
+  margin-bottom: 15px;
+}
+
+.email-body img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.email-body h1,
+.email-body h2,
+.email-body h3 {
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+.email-body ul,
+.email-body ol {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.email-body a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.email-body a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .email-details {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .email-details h2 {
+    font-size: 22px;
+  }
+
+  .email-body {
+    font-size: 16px;
+  }
+}

@@ -1,6 +1,6 @@
-import { MiscAction } from "../../Redux store/MiscSlice";
 import { Button, Col, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const menuItems = [
   "Compose",
@@ -15,17 +15,23 @@ const menuItems = [
 ];
 
 const MenuBar = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const unreadCount = useSelector((state) => state.email.unreadCount);
+
+  const handleClick = (item) => {
+    if (item === "Compose") navigate("/UserProfile/compose");
+    if (item === "Inbox") navigate("/UserProfile/inbox");
+  };
+
   return (
     <Col className="flex flex-col gap-3 p-4 bg-gray-100 h-full rounded-2xl shadow-md">
       {menuItems.map((item) => (
-        <Row>
-          <Button
-            key={item}
-            className="m-2 text-lg font-medium cursor-pointer hover:bg-gray-200 active:bg-gray-300 rounded-xl p-2 transition"
-            onClick={() => dispatch(MiscAction.setRenderingComp(item))}
-          >
+        <Row key={item}>
+          <Button className="m-2" onClick={() => handleClick(item)}>
             {item}
+            {item === "Inbox" && unreadCount > 0 && (
+              <span className="badge">{unreadCount}</span>
+            )}
           </Button>
         </Row>
       ))}

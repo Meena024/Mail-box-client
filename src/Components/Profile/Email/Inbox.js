@@ -1,17 +1,26 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import { EmailActions } from "../../../Redux store/EmailSlice";
 import "./Inbox.css";
 
 const Inbox = () => {
-  const [emails, setEmails] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const emails = useSelector((state) => state.email.inbox);
+  const unreadCount = useSelector((state) => state.email.unreadCount);
   const userEmail = useSelector((state) => state.auth.userEmail);
+
+  const [loading, setLoading] = useState(true);
+  const firebaseURL =
+    "https://mail-box-client-daab9-default-rtdb.firebaseio.com";
 
   const sanitizeEmail = (email) => email.replace(/\./g, "_");
 
+  // Fetch Emails
   useEffect(() => {
     if (!userEmail) return;
 
@@ -19,27 +28,22 @@ const Inbox = () => {
       setLoading(true);
       const sanitizedEmail = sanitizeEmail(userEmail);
 
-      const firebaseURL =
-        "https://mail-box-client-daab9-default-rtdb.firebaseio.com";
-
       try {
         const response = await axios.get(
           `${firebaseURL}/emails/inbox/${sanitizedEmail}.json`
         );
 
         if (response.data) {
-          // Convert objects to array with id
           const inboxArray = Object.keys(response.data).map((key) => ({
             id: key,
             ...response.data[key],
           }));
 
-          // Sort by latest → oldest
           inboxArray.sort(
             (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
           );
 
-          setEmails(inboxArray);
+          dispatch(EmailActions.setInbox(inboxArray));
         }
       } catch (err) {
         console.log(err);
@@ -49,7 +53,22 @@ const Inbox = () => {
     };
 
     fetchEmails();
-  }, [userEmail]);
+  }, [userEmail, dispatch]);
+
+  const openEmailHandler = async (mail) => {
+    navigate(`/UserProfile/email/${mail.id}`);
+
+    if (!mail.read) {
+      const sanitizedEmail = sanitizeEmail(userEmail);
+
+      await axios.patch(
+        `${firebaseURL}/emails/inbox/${sanitizedEmail}/${mail.id}.json`,
+        { read: true }
+      );
+
+      dispatch(EmailActions.markAsRead(mail.id));
+    }
+  };
 
   if (loading) {
     return <div className="inbox-loading">Loading emails...</div>;
@@ -58,7 +77,7 @@ const Inbox = () => {
   return (
     <div className="inbox-container">
       <div className="inbox-header">
-        <h3>Inbox</h3>
+        <h3>Inbox ({unreadCount})</h3>
       </div>
 
       <div className="inbox-list">
@@ -67,9 +86,13 @@ const Inbox = () => {
         )}
 
         {emails.map((email) => (
-          <div className="email-row" key={email.id}>
+          <div
+            className="email-row"
+            key={email.id}
+            onClick={() => openEmailHandler(email)}
+          >
             <div className="email-left">
-              {!email.read && <span className="unread-dot"></span>}
+              {!email.read && <span className="unread-dot px-2"></span>}
               <span className="email-from">{email.from}</span>
             </div>
 

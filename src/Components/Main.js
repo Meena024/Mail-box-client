@@ -8,7 +8,7 @@ const Main = () => {
   return (
     <>
       <Routes>
-        <Route path="/UserProfile" element={<ProfileMain />} />
+        <Route path="/UserProfile/*" element={<ProfileMain />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/" element={<Login />} />

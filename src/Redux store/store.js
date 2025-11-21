@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import AuthSlice from "./AuthSlice";
-import MiscSlice from "./MiscSlice";
+import EmailSlice from "./EmailSlice";
 
 const store = configureStore({
   reducer: {
     auth: AuthSlice.reducer,
-    misc: MiscSlice.reducer,
+    email: EmailSlice.reducer,
   },
 });
 

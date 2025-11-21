@@ -1,24 +1,72 @@
+jest.mock("../../Redux store/EmailSlice", () => ({
+  EmailActions: {
+    setInbox: (payload) => ({ type: "email/setInbox", payload }),
+    markAsRead: (id) => ({ type: "email/markAsRead", payload: id }),
+  },
+}));
+
 import { render, screen, waitFor, act } from "@testing-library/react";
 import Inbox from "../Profile/Email/Inbox";
 import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
+import { MemoryRouter } from "react-router-dom";
+import { configureStore } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Mock axios
 jest.mock("axios");
 
-const mockStore = configureStore([]);
+// --- Mock reducers used by Inbox component ---
+const emailReducer = (state = { inbox: [], unreadCount: 0 }, action) => {
+  switch (action.type) {
+    case "email/setInbox":
+      return { ...state, inbox: action.payload };
+    case "email/markAsRead":
+      return {
+        ...state,
+        inbox: state.inbox.map((m) =>
+          m.id === action.payload ? { ...m, read: true } : m
+        ),
+        unreadCount: Math.max(0, state.unreadCount - 1),
+      };
+    default:
+      return state;
+  }
+};
 
-// Updated render helper that fixes act() warning
-const renderWithStore = async (ui, storeState = {}) => {
-  const store = mockStore(storeState);
+const authReducer = (state = { userEmail: null }, action) => state;
+
+// Fix navigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => jest.fn(),
+}));
+
+// Proper render helper
+const renderWithStore = async (storeState = {}) => {
+  const store = configureStore({
+    reducer: {
+      email: emailReducer,
+      auth: authReducer,
+    },
+    preloadedState: storeState,
+  });
+
   let utils;
 
   await act(async () => {
-    utils = render(<Provider store={store}>{ui}</Provider>);
+    utils = render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Inbox />
+        </MemoryRouter>
+      </Provider>
+    );
   });
 
   return utils;
 };
+
+// ------------------ TESTS ---------------------
 
 describe("Inbox Component Tests", () => {
   beforeEach(() => {
@@ -26,9 +74,9 @@ describe("Inbox Component Tests", () => {
   });
 
   test("1. Renders loading state initially", async () => {
-    axios.get.mockResolvedValueOnce(new Promise(() => {})); // NEVER resolves
+    axios.get.mockResolvedValueOnce(new Promise(() => {})); // never resolves
 
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: "test@example.com" },
     });
 
@@ -38,7 +86,7 @@ describe("Inbox Component Tests", () => {
   test("2. Calls axios GET with sanitized email", async () => {
     axios.get.mockResolvedValueOnce({ data: null });
 
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: "user.test@example.com" },
     });
 
@@ -52,13 +100,13 @@ describe("Inbox Component Tests", () => {
   test("3. Displays 'No emails found' when inbox is empty", async () => {
     axios.get.mockResolvedValueOnce({ data: null });
 
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: "test@example.com" },
     });
 
-    await waitFor(() => {
-      expect(screen.getByText("No emails found.")).toBeInTheDocument();
-    });
+    await waitFor(() =>
+      expect(screen.getByText("No emails found.")).toBeInTheDocument()
+    );
   });
 
   test("4. Renders list of emails from API", async () => {
@@ -73,7 +121,7 @@ describe("Inbox Component Tests", () => {
       },
     });
 
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: "test@example.com" },
     });
 
@@ -93,13 +141,11 @@ describe("Inbox Component Tests", () => {
       },
     });
 
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: "test@example.com" },
     });
 
-    await waitFor(() =>
-      expect(screen.getByText("Unread Mail")).toBeInTheDocument()
-    );
+    await screen.findByText("Unread Mail");
 
     const unreadDot = document.querySelector(".unread-dot");
     expect(unreadDot).toBeInTheDocument();
@@ -123,7 +169,7 @@ describe("Inbox Component Tests", () => {
       },
     });
 
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: "test@example.com" },
     });
 
@@ -134,10 +180,34 @@ describe("Inbox Component Tests", () => {
   });
 
   test("7. Does NOT call axios if no userEmail exists", async () => {
-    await renderWithStore(<Inbox />, {
+    await renderWithStore({
       auth: { userEmail: null },
     });
 
     expect(axios.get).not.toHaveBeenCalled();
   });
+});
+
+test("8. Shows unread dot next to unread email", async () => {
+  axios.get.mockResolvedValueOnce({
+    data: {
+      mail11: {
+        from: "john@example.com",
+        subject: "Unread Email",
+        date: "2025-02-10T10:00:00Z",
+        read: false,
+      },
+    },
+  });
+
+  await renderWithStore({
+    auth: { userEmail: "test@example.com" },
+  });
+
+  const row = await screen.findByText("Unread Email");
+
+  // Check inside the parent email row
+  const emailRow = row.closest(".email-row");
+
+  expect(emailRow.querySelector(".unread-dot")).toBeInTheDocument();
 });

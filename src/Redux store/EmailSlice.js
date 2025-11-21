@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const EmailSlice = createSlice({
-  name: "emails",
+  name: "email",
   initialState: {
     inbox: [],
     unreadCount: 0,
@@ -16,6 +16,14 @@ const EmailSlice = createSlice({
       const mail = state.inbox.find((m) => m.id === id);
       if (mail && !mail.read) {
         mail.read = true;
+        state.unreadCount -= 1;
+      }
+    },
+    deleteEmail(state, action) {
+      const id = action.payload;
+      const mail = state.inbox.find((m) => m.id === id);
+      state.inbox = state.inbox.filter((m) => m.id !== id);
+      if (mail && !mail.read) {
         state.unreadCount -= 1;
       }
     },

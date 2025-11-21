@@ -8,11 +8,33 @@
   font-family: "Segoe UI", sans-serif;
 }
 
-.email-details h2 {
+.email-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 15px;
+}
+
+.email-header-row h2 {
+  margin: 0;
   font-size: 26px;
   font-weight: 600;
   color: #222;
+}
+
+.delete-btn {
+  padding: 8px 16px;
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s ease-in-out;
+}
+
+.delete-btn:hover {
+  background: #e60000;
 }
 
 .email-info {
@@ -34,7 +56,7 @@
   color: #333;
 }
 
-/* Styling content generated from JoditEditor */
+/* Jodit output styling */
 .email-body p {
   margin-bottom: 15px;
 }
@@ -66,18 +88,23 @@
   text-decoration: underline;
 }
 
-/* Mobile responsive */
+/* Mobile responsiveness */
 @media (max-width: 600px) {
   .email-details {
     padding: 20px;
     margin: 20px;
   }
 
-  .email-details h2 {
+  .email-header-row h2 {
     font-size: 22px;
   }
 
   .email-body {
     font-size: 16px;
+  }
+
+  .delete-btn {
+    padding: 6px 12px;
+    font-size: 13px;
   }
 }

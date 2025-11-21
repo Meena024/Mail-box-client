@@ -70,6 +70,20 @@ const Inbox = () => {
     }
   };
 
+  const deleteEmailHandler = async (mailId) => {
+    const sanitizedEmail = sanitizeEmail(userEmail);
+
+    try {
+      await axios.delete(
+        `${firebaseURL}/emails/inbox/${sanitizedEmail}/${mailId}.json`
+      );
+
+      dispatch(EmailActions.deleteEmail(mailId));
+    } catch (err) {
+      console.log("Delete failed", err);
+    }
+  };
+
   if (loading) {
     return <div className="inbox-loading">Loading emails...</div>;
   }
@@ -86,20 +100,29 @@ const Inbox = () => {
         )}
 
         {emails.map((email) => (
-          <div
-            className="email-row"
-            key={email.id}
-            onClick={() => openEmailHandler(email)}
-          >
-            <div className="email-left">
+          <div className="email-row" key={email.id}>
+            <div className="email-left" onClick={() => openEmailHandler(email)}>
               {!email.read && <span className="unread-dot px-2"></span>}
               <span className="email-from">{email.from}</span>
             </div>
 
-            <div className="email-subject">{email.subject}</div>
+            <div
+              className="email-subject"
+              onClick={() => openEmailHandler(email)}
+            >
+              {email.subject}
+            </div>
 
-            <div className="email-date">
+            <div className="email-date" onClick={() => openEmailHandler(email)}>
               {moment(email.date).format("MMM D")}
+            </div>
+            <div>
+              <button
+                className="delete-btn"
+                onClick={() => deleteEmailHandler(email.id)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}

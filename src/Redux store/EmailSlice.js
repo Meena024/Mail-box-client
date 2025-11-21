@@ -11,10 +11,16 @@ const EmailSlice = createSlice({
     setSent(state, action) {
       state.sent = action.payload;
     },
+
     setInbox(state, action) {
       state.inbox = action.payload;
       state.unreadCount = action.payload.filter((mail) => !mail.read).length;
     },
+
+    setUnreadCount(state, action) {
+      state.unreadCount = action.payload;
+    },
+
     markAsRead(state, action) {
       const id = action.payload;
       const mail = state.inbox.find((m) => m.id === id);
@@ -23,6 +29,7 @@ const EmailSlice = createSlice({
         state.unreadCount -= 1;
       }
     },
+
     deleteEmail(state, action) {
       const id = action.payload;
       const mail = state.inbox.find((m) => m.id === id);
@@ -31,6 +38,7 @@ const EmailSlice = createSlice({
         state.unreadCount -= 1;
       }
     },
+
     deleteSentEmail(state, action) {
       const id = action.payload;
       state.sent = state.sent.filter((m) => m.id !== id);

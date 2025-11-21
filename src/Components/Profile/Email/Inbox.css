@@ -1,99 +1,96 @@
-/* Main container */
 .inbox-container {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  margin: 80px 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .inbox-header {
-  border-bottom: 1px solid #e5e5e5;
-  padding-bottom: 12px;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .inbox-header h3 {
+  margin: 0;
+  font-size: 22px;
   font-weight: 600;
-  color: #333;
 }
 
-/* List container */
 .inbox-list {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* Individual email row */
 .email-row {
   display: grid;
-  grid-template-columns: 2fr 6fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr 90px 80px;
   align-items: center;
-  padding: 14px 10px;
-  border-bottom: 1px solid #f1f1f1;
+  padding: 12px 15px;
+  background: #f8f9fc;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: 0.2s ease;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
 }
 
 .email-row:hover {
-  background: #f7f9fc;
+  background: #eef2ff;
+  border-color: #d0d7ff;
 }
 
-/* unread blue dot */
 .unread-dot {
-  height: 10px;
   width: 10px;
-  background: #1a73e8;
+  height: 10px;
+  background: #2563eb;
   border-radius: 50%;
-  margin-right: 10px;
+  display: inline-block;
+  margin-right: 8px;
 }
 
-/* sender name */
 .email-from {
-  font-weight: 600;
+  font-weight: bold;
   color: #333;
-  margin-left: 5px;
 }
 
-/* subject */
 .email-subject {
-  color: #555;
+  color: #444;
   font-size: 15px;
 }
 
-/* date */
 .email-date {
-  color: #777;
-  font-size: 14px;
   text-align: right;
-}
-
-/* Empty inbox */
-.no-emails {
-  text-align: center;
-  padding: 40px;
-  color: #777;
-}
-
-/* Loading */
-.inbox-loading {
-  padding: 40px;
-  text-align: center;
-  font-size: 18px;
-  color: #444;
+  font-size: 14px;
+  color: #666;
 }
 
 .delete-btn {
   padding: 6px 12px;
+  font-size: 14px;
   background: #ff4d4d;
-  color: white;
   border: none;
-  border-radius: 6px;
+  color: white;
+  border-radius: 5px;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
-  margin-left: 15px;
+  transition: 0.2s ease;
 }
 
 .delete-btn:hover {
-  background: #e60000;
+  background: #e03333;
+}
+
+.no-emails {
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+}
+
+.inbox-loading {
+  padding: 15px;
+  font-size: 18px;
+  text-align: center;
 }

@@ -1,0 +1,12 @@
+:root {
+  --contrast-color: rgb(6, 123, 158);
+}
+
+.card button {
+  background-color: var(--contrast-color);
+  color: white;
+  border-radius: 10px;
+  border: 1px solid white;
+  padding: 6px 20px;
+  font-weight: 750;
+}

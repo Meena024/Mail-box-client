@@ -1,27 +1,29 @@
-import { useSelector } from "react-redux";
-import "./Inbox.css";
-import { useFetchInbox } from "../../../hooks/useFetchInbox";
-import { useDeleteEmail } from "../../../hooks/useDeleteEmail";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { MdDeleteOutline } from "react-icons/md";
+import "./EmailListing.css";
+// import "./EmailListing.css";
+// keep inbox styling
 
-const Inbox = () => {
+const EmailListing = ({ type, emails, deleteEmail }) => {
   const navigate = useNavigate();
-  const { emails, loading } = useFetchInbox();
   const userEmail = useSelector((s) => s.auth.userEmail);
-  const deleteEmail = useDeleteEmail();
 
-  if (loading) return <div className="inbox-loading">Loading...</div>;
-  if (!userEmail) return <div>Please login</div>;
+  if (!emails) return <div>Loading...</div>;
 
   return (
     <div className="inbox-container">
       <div className="inbox-header">
-        <h3>Inbox</h3>
+        <h3>{type === "sent" ? "Sent Emails" : "Inbox"}</h3>
       </div>
 
       <div className="inbox-list">
-        {emails.length === 0 && <div className="no-emails">No emails</div>}
+        {emails.length === 0 && (
+          <div className="no-emails">
+            {type === "sent" ? "No sent emails." : "No emails"}
+          </div>
+        )}
 
         {emails.map((mail) => (
           <div
@@ -30,8 +32,10 @@ const Inbox = () => {
             onClick={() => navigate(`/UserProfile/email/${mail.id}`)}
           >
             <div className="email-from">
-              {!mail.read && <span className="unread-dot"></span>}
-              {mail.from}
+              {type === "inbox" && !mail.read && (
+                <span className="unread-dot"></span>
+              )}
+              {type === "inbox" ? mail.from : mail.to}
             </div>
 
             <div className="email-subject">{mail.subject}</div>
@@ -41,13 +45,12 @@ const Inbox = () => {
             </div>
 
             <button
-              className="delete-btn"
               onClick={(e) => {
                 e.stopPropagation();
-                deleteEmail(userEmail, "inbox", mail.id);
+                deleteEmail(userEmail, type, mail.id);
               }}
             >
-              Delete
+              <MdDeleteOutline />
             </button>
           </div>
         ))}
@@ -56,4 +59,4 @@ const Inbox = () => {
   );
 };
 
-export default Inbox;
+export default EmailListing;

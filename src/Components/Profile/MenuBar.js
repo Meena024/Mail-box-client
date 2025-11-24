@@ -1,42 +1,41 @@
-import { Button, Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import Menu_class from "../UI/MenuBar.module.css";
 
 const menuItems = [
-  "Compose",
-  "Inbox",
-  "Unread",
-  "Starred",
-  "Drafts",
-  "Sent",
-  "Archive",
-  "Spam",
-  "Deleted Items",
+  { name: "Compose", path: "/UserProfile/compose" },
+  { name: "Inbox", path: "/UserProfile/inbox" },
+  { name: "Unread", path: "/UserProfile/unread" },
+  { name: "Starred", path: "/UserProfile/starred" },
+  { name: "Drafts", path: "/UserProfile/drafts" },
+  { name: "Sent", path: "/UserProfile/sent" },
+  { name: "Archive", path: "/UserProfile/archive" },
+  { name: "Spam", path: "/UserProfile/spam" },
+  { name: "Deleted Items", path: "/UserProfile/deleteditems" },
 ];
 
 const MenuBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const unreadCount = useSelector((state) => state.email.unreadCount);
 
-  const handleClick = (item) => {
-    if (item === "Compose") navigate("/UserProfile/compose");
-    if (item === "Inbox") navigate("/UserProfile/inbox");
-    if (item === "Sent") navigate("/UserProfile/sent");
-  };
-
   return (
-    <Col className="flex flex-col gap-3 p-4 bg-gray-100 h-full rounded-2xl shadow-md">
+    <div className={Menu_class.sidebar}>
       {menuItems.map((item) => (
-        <Row key={item}>
-          <Button className="m-2" onClick={() => handleClick(item)}>
-            {item}
-            {item === "Inbox" && unreadCount > 0 && (
-              <span className="badge">{unreadCount}</span>
-            )}
-          </Button>
-        </Row>
+        <button
+          key={item.name}
+          className={`${Menu_class.menuItem} ${
+            location.pathname.includes(item.path) ? Menu_class.active : ""
+          }`}
+          onClick={() => navigate(item.path)}
+        >
+          {item.name}
+          {item.name === "Inbox" && unreadCount > 0 && (
+            <span className={Menu_class.badge}>{unreadCount}</span>
+          )}
+        </button>
       ))}
-    </Col>
+    </div>
   );
 };
 

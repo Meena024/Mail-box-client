@@ -1,7 +1,8 @@
-import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthAction } from "../Redux store/AuthSlice";
 import { useNavigate } from "react-router";
+import Header_class from "./UI/Header.module.css";
+import { IoMdLogOut } from "react-icons/io";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -14,11 +15,12 @@ const Header = () => {
     navigate("/");
   };
   return (
-    <div className="d-flex justify-content-end">
+    <div className={Header_class.head}>
+      <h2>Mail Box</h2>
       {isLoggedIn && (
-        <Button className="m-3" onClick={logoutHandler}>
-          Logout
-        </Button>
+        <button className="m-3" onClick={logoutHandler}>
+          <IoMdLogOut />
+        </button>
       )}
     </div>
   );

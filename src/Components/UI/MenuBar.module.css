@@ -1,0 +1,40 @@
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background-color: #f1f1f1;
+  padding: 20px 0;
+  overflow-y: auto;
+  border-right: 1px solid #dcdcdc;
+}
+
+.menuItem {
+  width: 100%;
+  padding: 10px 20px;
+  text-align: left;
+  background-color: #f1f1f1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #000;
+  border-radius: 0;
+  margin: 0 6px;
+}
+
+.menuItem:hover {
+  background-color: #568ca7;
+}
+
+.active {
+  background-color: #059862 !important;
+  color: white !important;
+}
+
+.badge {
+  background-color: #ff4444;
+  color: white;
+  padding: 3px 8px;
+  margin-left: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}

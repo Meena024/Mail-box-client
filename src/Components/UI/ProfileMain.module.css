@@ -1,0 +1,10 @@
+.sidebar {
+  background-color: rgba(240, 240, 240, 1);
+  height: 100vh; /* full vertical height */
+  width: 200px; /* fixed width */
+  padding: 0;
+}
+
+.routes {
+  min-width: 0;
+}

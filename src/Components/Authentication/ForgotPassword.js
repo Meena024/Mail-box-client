@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { Card, Form, Button } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -64,9 +62,9 @@ const ForgotPassword = () => {
 
           {/* Submit */}
           <div className="d-grid">
-            <Button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading}>
               {loading ? "Loading..." : "Reset Password"}
-            </Button>
+            </button>
           </div>
 
           {/* Success / Error Messages */}
@@ -77,9 +75,9 @@ const ForgotPassword = () => {
 
           {/* Back to Login */}
           <div className="text-center mt-3">
-            <Button type="button" variant="link" onClick={() => navigate("/")}>
-              Go back to Sign In?
-            </Button>
+            <Link to="/">
+              Go back to <strong>Sign In?</strong>
+            </Link>
           </div>
         </Form>
       </Card>

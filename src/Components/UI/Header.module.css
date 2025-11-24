@@ -1,0 +1,14 @@
+.head {
+  background-color: var(--contrast-color);
+  height: 50px;
+  display: flex;
+  justify-content: space-between; /* pushes title left, button right */
+  align-items: center; /* vertical centering */
+  padding: 0 20px; /* optional nice spacing */
+  color: white;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.head button {
+  background-color: rgb(173, 10, 10);
+}

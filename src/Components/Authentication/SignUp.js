@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
+import { Card, Form } from "react-bootstrap";
 import VerifyEmail from "./VerifyEmail";
 
 const SignUp = () => {
@@ -108,17 +108,17 @@ const SignUp = () => {
 
           {/* Submit button */}
           <div className="d-grid">
-            <Button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading}>
               {loading ? "Logging in..." : "Sign Up"}
-            </Button>
+            </button>
           </div>
 
           {/* Go to Login */}
           <div className="text-center mt-3">
-            <Button type="button" variant="link" onClick={() => navigate("/")}>
+            <Link to="/">
               Already have an Account?
               <div className="fw-bold">SIGN IN</div>
-            </Button>
+            </Link>
           </div>
         </Form>
       </Card>

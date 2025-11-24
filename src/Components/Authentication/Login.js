@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { Button, Card } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { Card } from "react-bootstrap";
 import { AuthAction } from "../../Redux store/AuthSlice";
 import { useDispatch } from "react-redux";
 
@@ -39,7 +39,7 @@ const Login = () => {
 
       dispatch(AuthAction.login(data));
 
-      navigate("/UserProfile");
+      navigate("/UserProfile/inbox");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -87,33 +87,22 @@ const Login = () => {
 
           {/* Submit button */}
           <div className="d-grid">
-            <Button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading}>
               {loading ? "Logging in..." : "Sign In"}
-            </Button>
+            </button>
           </div>
 
           {/* Forgot password */}
           <div className="text-center mt-3">
-            <Button
-              type="button"
-              variant="link"
-              color="black"
-              onClick={() => navigate("/ForgotPassword")}
-            >
-              Forgot Password?
-            </Button>
+            <Link to="/ForgotPassword">Forgot Password?</Link>
           </div>
 
           {/* Signup */}
           <div className="text-center mt-2">
-            <Button
-              type="button"
-              variant="link"
-              onClick={() => navigate("/SignUp")}
-            >
+            <Link to="/SignUp">
               Create a new Account?
               <div className="fw-bold">SIGN UP</div>
-            </Button>
+            </Link>
           </div>
         </Form>
       </Card>

@@ -1,22 +1,69 @@
+/* Container */
 .emailInput {
   width: 800px;
-  max-width: 90%;
-  margin: 80px auto;
-  border: 1px solid rgb(252, 251, 251);
+  max-width: 95%; /* ← prevents disappearing on smaller screens */
+  min-width: 320px; /* ← ensures it never compresses too much */
+  margin: 40px auto;
+  border: 1px solid #fcfcfc;
   border-radius: 10px;
   box-shadow: 3px 4px 15px rgb(232, 229, 229);
-  padding: 10px;
+  padding: 20px;
+  background: white;
 }
+
+/* Input fields */
 .input {
-  /* border-style:"hidden",   */
-  border: 1px solid white;
-  width: 80%;
-  /* border-bottom: 1px solid gray; */
-  margin: 10px;
+  width: 90%;
+  border: 1px solid #e0e0e0;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 5px;
 }
+
 .input:focus {
   outline: none;
+  border-color: #0d6efd;
 }
-.editor {
-  margin: 10px;
+
+/* Prevent disturbing Jodit toolbar */
+.emailInput .jodit-container button {
+  all: initial !important;
+}
+
+/* Button wrapper */
+.email-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Send & Cancel buttons */
+.action-btn {
+  background-color: #007baf !important;
+  color: white !important;
+  padding: 8px 20px !important;
+  border-radius: 5px !important;
+  border: none !important;
+  font-weight: 500 !important;
+}
+
+.cancel-btn {
+  background-color: #6c757d !important;
+}
+
+@media (max-width: 600px) {
+  .emailInput {
+    margin: 10px auto;
+    padding: 10px;
+  }
+
+  .email-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input {
+    width: 100%;
+  }
 }

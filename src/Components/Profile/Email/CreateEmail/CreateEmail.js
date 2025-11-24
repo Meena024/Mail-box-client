@@ -29,7 +29,7 @@ const CreateEmail = () => {
     const subject = inputSubjectRef.current.value.trim();
 
     if (!isValidEmail(enteredTo)) {
-      alert("Please enter a valid email.");
+      alert("Please enter a valid email address");
       return;
     }
 
@@ -56,6 +56,7 @@ const CreateEmail = () => {
           className="input"
           placeholder="To"
         />
+
         <input
           type="text"
           ref={inputSubjectRef}
@@ -69,13 +70,13 @@ const CreateEmail = () => {
           onChange={(newContent) => setContent(newContent)}
         />
 
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button className="m-2" type="submit">
+        <div className="email-buttons">
+          <Button className="action-btn" type="submit">
             Send
           </Button>
 
-          <Link to="/Users">
-            <Button className="m-2">Cancel</Button>
+          <Link to="/UserProfile/inbox">
+            <Button className="action-btn cancel-btn">Cancel</Button>
           </Link>
         </div>
       </form>

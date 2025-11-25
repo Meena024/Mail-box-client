@@ -13,6 +13,7 @@ export const useSendEmail = () => {
       subject,
       emaildata: body,
       read: false,
+      starred: false,
       date: moment().format("LLL"),
     };
 

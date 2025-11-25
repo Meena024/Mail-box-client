@@ -30,6 +30,14 @@ const EmailSlice = createSlice({
       }
     },
 
+    UpdateStar(state, action) {
+      const id = action.payload;
+      const mail = state.inbox.find((m) => m.id === id);
+      if (mail) {
+        mail.starred = !mail.starred;
+      }
+    },
+
     deleteEmail(state, action) {
       const id = action.payload;
       const mail = state.inbox.find((m) => m.id === id);

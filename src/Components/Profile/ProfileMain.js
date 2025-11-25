@@ -4,7 +4,7 @@ import { fetchAuthData } from "../../Redux store/AuthActions";
 import CreateEmail from "./Email/CreateEmail/CreateEmail";
 import { Row, Col } from "react-bootstrap";
 import MenuBar from "./MenuBar";
-import EmailDetails from "./Email/ReceivedEmail/EmailDetails";
+import EmailDetails from "./Email/DetailedEmail/EmailDetails";
 import { Routes, Route } from "react-router-dom";
 import main_class from "../UI/ProfileMain.module.css";
 import EmailListing from "./Email/EmailListing/EmailListing";
@@ -34,6 +34,26 @@ const ProfileMain = () => {
               <EmailListing
                 type="inbox"
                 emails={useFetchInbox().emails}
+                deleteEmail={useDeleteEmail()}
+              />
+            }
+          />
+          <Route
+            path="unread"
+            element={
+              <EmailListing
+                type="inbox"
+                emails={useFetchInbox().emails.filter((email) => !email.read)}
+                deleteEmail={useDeleteEmail()}
+              />
+            }
+          />
+          <Route
+            path="starred"
+            element={
+              <EmailListing
+                type="inbox"
+                emails={useFetchInbox().emails.filter((email) => email.starred)}
                 deleteEmail={useDeleteEmail()}
               />
             }

@@ -31,8 +31,9 @@ const EmailSlice = createSlice({
     },
 
     UpdateStar(state, action) {
-      const id = action.payload;
-      const mail = state.inbox.find((m) => m.id === id);
+      const { id, type } = action.payload;
+      const list = state[type];
+      const mail = list.find((m) => m.id === id);
       if (mail) {
         mail.starred = !mail.starred;
       }

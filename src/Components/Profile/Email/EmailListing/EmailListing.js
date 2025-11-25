@@ -7,10 +7,12 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { EmailActions } from "../../../../Redux store/EmailSlice";
 import { useEmailApi } from "../../../../hooks/useEmailApi";
 import { useSanitizeEmail } from "../../../../hooks/useSanitizeEmail";
+import { useDeleteEmail } from "../../../../hooks/useDeleteEmail";
 
-const EmailListing = ({ type, emails, deleteEmail }) => {
+const EmailListing = ({ type, emails }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const deleteEmail = useDeleteEmail();
   const api = useEmailApi();
   const sanitizeEmail = useSanitizeEmail();
 
@@ -29,7 +31,7 @@ const EmailListing = ({ type, emails, deleteEmail }) => {
   const starHandler = async (mail) => {
     const sanitizedEmail = sanitizeEmail(userEmail);
 
-    dispatch(EmailActions.UpdateStar(mail.id));
+    dispatch(EmailActions.UpdateStar({ id: mail.id, type }));
 
     await api.patch(`emails/${type}/${sanitizedEmail}/${mail.id}`, {
       starred: !mail.starred,

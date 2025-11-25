@@ -10,7 +10,6 @@ import main_class from "../UI/ProfileMain.module.css";
 import EmailListing from "./Email/EmailListing/EmailListing";
 import { useFetchInbox } from "../../hooks/useFetchInbox";
 import { useFetchSent } from "../../hooks/useFetchSent";
-import { useDeleteEmail } from "../../hooks/useDeleteEmail";
 
 const ProfileMain = () => {
   const dispatch = useDispatch();
@@ -31,11 +30,7 @@ const ProfileMain = () => {
           <Route
             path="inbox"
             element={
-              <EmailListing
-                type="inbox"
-                emails={useFetchInbox().emails}
-                deleteEmail={useDeleteEmail()}
-              />
+              <EmailListing type="inbox" emails={useFetchInbox().emails} />
             }
           />
           <Route
@@ -44,17 +39,24 @@ const ProfileMain = () => {
               <EmailListing
                 type="inbox"
                 emails={useFetchInbox().emails.filter((email) => !email.read)}
-                deleteEmail={useDeleteEmail()}
               />
             }
           />
           <Route
-            path="starred"
+            path="starred/inbox"
             element={
               <EmailListing
                 type="inbox"
                 emails={useFetchInbox().emails.filter((email) => email.starred)}
-                deleteEmail={useDeleteEmail()}
+              />
+            }
+          />
+          <Route
+            path="starred/sent"
+            element={
+              <EmailListing
+                type="sent"
+                emails={useFetchSent().emails.filter((email) => email.starred)}
               />
             }
           />
@@ -63,11 +65,7 @@ const ProfileMain = () => {
           <Route
             path="sent"
             element={
-              <EmailListing
-                type="sent"
-                emails={useFetchSent().emails}
-                deleteEmail={useDeleteEmail()}
-              />
+              <EmailListing type="sent" emails={useFetchSent().emails} />
             }
           />
         </Routes>

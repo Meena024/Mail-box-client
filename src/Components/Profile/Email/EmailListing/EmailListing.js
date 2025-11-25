@@ -59,6 +59,15 @@ const EmailListing = ({ type, emails }) => {
             key={mail.id}
             onClick={() => detailedViewHandler(mail)}
           >
+            <div
+              className="star-icon"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent opening email
+                starHandler(mail);
+              }}
+            >
+              {mail.starred ? <FaStar /> : <FaRegStar />}
+            </div>
             <div className="email-from">
               {type === "inbox" && !mail.read && (
                 <span className="unread-dot"></span>
@@ -79,15 +88,6 @@ const EmailListing = ({ type, emails }) => {
               }}
             >
               <MdDeleteOutline />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                starHandler(mail);
-              }}
-            >
-              {!mail.starred && <FaRegStar />}
-              {mail.starred && <FaStar />}
             </button>
           </div>
         ))}

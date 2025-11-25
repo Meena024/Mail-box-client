@@ -83,3 +83,15 @@
   font-size: 18px;
   text-align: center;
 }
+
+.star-icon {
+  cursor: pointer;
+  padding: 5px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.star-icon:hover {
+  color: #f4b400; /* gold hover */
+}

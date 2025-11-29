@@ -10,6 +10,7 @@ import main_class from "../UI/ProfileMain.module.css";
 import EmailListing from "./Email/EmailListing/EmailListing";
 import { useFetchInbox } from "../../hooks/useFetchInbox";
 import { useFetchSent } from "../../hooks/useFetchSent";
+import { useFetchDraft } from "../../hooks/useFetchDraft";
 
 const ProfileMain = () => {
   const dispatch = useDispatch();
@@ -27,45 +28,51 @@ const ProfileMain = () => {
 
       <Col className={main_class.routes}>
         <Routes>
+          <Route path="compose" element={<CreateEmail />} />
           <Route
-            path="inbox"
+            path="Inbox"
             element={
-              <EmailListing type="inbox" emails={useFetchInbox().emails} />
+              <EmailListing type="Inbox" emails={useFetchInbox().emails} />
             }
           />
           <Route
-            path="unread"
+            path="Unread"
             element={
               <EmailListing
-                type="inbox"
+                type="Unread: Inbox"
                 emails={useFetchInbox().emails.filter((email) => !email.read)}
               />
             }
           />
           <Route
-            path="starred/inbox"
+            path="Starred/Inbox"
             element={
               <EmailListing
-                type="inbox"
+                type="Starred: Inbox"
                 emails={useFetchInbox().emails.filter((email) => email.starred)}
               />
             }
           />
           <Route
-            path="starred/sent"
+            path="Starred/Sent"
             element={
               <EmailListing
-                type="sent"
+                type="Starred: Sent"
                 emails={useFetchSent().emails.filter((email) => email.starred)}
               />
             }
           />
-          <Route path="compose" element={<CreateEmail />} />
+          <Route
+            path="Drafts"
+            element={
+              <EmailListing type="Drafts" emails={useFetchDraft().emails} />
+            }
+          />
           <Route path="email/:id" element={<EmailDetails />} />
           <Route
-            path="sent"
+            path="Sent"
             element={
-              <EmailListing type="sent" emails={useFetchSent().emails} />
+              <EmailListing type="Sent" emails={useFetchSent().emails} />
             }
           />
         </Routes>

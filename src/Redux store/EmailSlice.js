@@ -6,10 +6,14 @@ const EmailSlice = createSlice({
     inbox: [],
     unreadCount: 0,
     sent: [],
+    drafts: [],
   },
   reducers: {
     setSent(state, action) {
       state.sent = action.payload;
+    },
+    setDrafts(state, action) {
+      state.drafts = action.payload;
     },
 
     setInbox(state, action) {
@@ -32,7 +36,11 @@ const EmailSlice = createSlice({
 
     UpdateStar(state, action) {
       const { id, type } = action.payload;
-      const list = state[type];
+      const list = type.includes("Sent")
+        ? state.sent
+        : type.includes("Inbox")
+        ? state.inbox
+        : state.drafts;
       const mail = list.find((m) => m.id === id);
       if (mail) {
         mail.starred = !mail.starred;

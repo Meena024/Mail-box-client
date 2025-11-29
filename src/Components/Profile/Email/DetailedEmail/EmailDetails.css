@@ -24,8 +24,8 @@
 
 .delete-btn {
   padding: 8px 16px;
-  background: #ff4d4d;
-  color: #fff;
+  /* background: #ff4d4d; */
+  color: black;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -34,7 +34,8 @@
 }
 
 .delete-btn:hover {
-  background: #e60000;
+  background: #d00000;
+  color: #fff;
 }
 
 .email-info {

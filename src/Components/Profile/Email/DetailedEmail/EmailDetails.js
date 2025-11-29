@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./EmailDetails.css";
 import axios from "axios";
+import { MdDeleteOutline } from "react-icons/md";
 import { EmailActions } from "../../../../Redux store/EmailSlice";
 
 const EmailDetails = () => {
@@ -20,17 +21,17 @@ const EmailDetails = () => {
 
   if (!mail) return <div>Email not found</div>;
 
-  const folder = inbox.some((m) => m.id === id) ? "inbox" : "sent";
+  const category = inbox.some((m) => m.id === id) ? "Inbox" : "Sent";
 
   const deleteEmailHandler = async (mailId) => {
     const sanitizedEmail = sanitizeEmail(userEmail);
 
     try {
       await axios.delete(
-        `${firebaseURL}/emails/${folder}/${sanitizedEmail}/${mailId}.json`
+        `${firebaseURL}/Emails/${category}/${sanitizedEmail}/${mailId}.json`
       );
 
-      if (folder === "inbox") {
+      if (category === "inbox") {
         dispatch(EmailActions.deleteEmail(mailId));
       } else {
         dispatch(EmailActions.deleteSentEmail(mailId));
@@ -44,22 +45,19 @@ const EmailDetails = () => {
     <div className="email-details">
       <div className="email-header-row">
         <h2>{mail.subject}</h2>
-        <button
-          className="delete-btn"
-          onClick={() => deleteEmailHandler(mail.id)}
-        >
-          Delete
-        </button>
+        <div className="delete-btn" onClick={() => deleteEmailHandler(mail.id)}>
+          <MdDeleteOutline />
+        </div>
       </div>
 
       <div className="email-info">
-        {folder === "inbox" && (
+        {category === "Inbox" && (
           <div>
             <strong>From:</strong> {mail.from}
           </div>
         )}
 
-        {folder === "sent" && (
+        {category === "Sent" && (
           <div>
             <strong>To:</strong> {mail.to}
           </div>

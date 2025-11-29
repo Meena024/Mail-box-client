@@ -3,13 +3,14 @@ import JoditEditor from "jodit-react";
 import { useState, useRef } from "react";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { useSendEmail } from "../../../../hooks/useSendEmail";
+import { useSaveDraft } from "../../../../hooks/useSaveDraft";
 
 const CreateEmail = () => {
   const editor = useRef(null);
   const inputToRef = useRef("");
   const inputSubjectRef = useRef("");
+  const saveDraft = useSaveDraft();
 
   const authUserEmail = useSelector((state) => state.auth.userEmail);
 
@@ -75,9 +76,29 @@ const CreateEmail = () => {
             Send
           </Button>
 
-          <Link to="/UserProfile/inbox">
-            <Button className="action-btn cancel-btn">Cancel</Button>
-          </Link>
+          <Button
+            style={{
+              backgroundColor: "#C85C8E",
+              border: "1px solid #C85C8E",
+            }}
+            className="my-2"
+            onClick={async () => {
+              const to = inputToRef.current.value;
+              const subject = inputSubjectRef.current.value;
+              const body = editor.current.value;
+
+              // Do NOT save empty drafts
+              if (to || subject || body) {
+                await saveDraft(authUserEmail, to, subject, body);
+                alert("Draft saved.");
+              }
+
+              // Navigate away
+              window.location.href = "/UserProfile/inbox";
+            }}
+          >
+            Cancel
+          </Button>
         </div>
       </form>
     </div>

@@ -20,8 +20,8 @@ export const useSendEmail = () => {
     const sanitizedTo = sanitizeEmail(to);
     const sanitizedFrom = sanitizeEmail(from);
 
-    await api.post(`emails/inbox/${sanitizedTo}`, emailData);
-    await api.post(`emails/sent/${sanitizedFrom}`, emailData);
+    await api.post(`Emails/Inbox/${sanitizedTo}`, emailData);
+    await api.post(`Emails/Sent/${sanitizedFrom}`, emailData);
   };
 
   return sendEmail;

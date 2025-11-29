@@ -21,7 +21,7 @@ export const useFetchInbox = () => {
     const sanitized = sanitizeEmail(userEmail);
 
     const fetchEmails = async () => {
-      const data = await api.get(`emails/inbox/${sanitized}`);
+      const data = await api.get(`Emails/Inbox/${sanitized}`);
       const inboxArray = data
         ? Object.keys(data).map((id) => ({ id, ...data[id] }))
         : [];

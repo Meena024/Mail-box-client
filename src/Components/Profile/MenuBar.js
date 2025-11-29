@@ -4,21 +4,21 @@ import Menu_class from "../UI/MenuBar.module.css";
 import { useState } from "react";
 
 const menuItems = [
-  { name: "Compose", path: "/UserProfile/compose" },
-  { name: "Inbox", path: "/UserProfile/inbox" },
-  { name: "Unread", path: "/UserProfile/unread" },
+  { name: "Compose", path: "/UserProfile/Compose" },
+  { name: "Inbox", path: "/UserProfile/Inbox" },
+  { name: "Unread", path: "/UserProfile/Unread" },
   {
     name: "Starred",
     sub: [
-      { name: "Inbox", path: "/UserProfile/starred/inbox" },
-      { name: "Sent", path: "/UserProfile/starred/sent" },
+      { name: "Inbox", path: "/UserProfile/starred/Inbox" },
+      { name: "Sent", path: "/UserProfile/starred/Sent" },
     ],
   },
-  { name: "Drafts", path: "/UserProfile/drafts" },
-  { name: "Sent", path: "/UserProfile/sent" },
-  { name: "Archive", path: "/UserProfile/archive" },
-  { name: "Spam", path: "/UserProfile/spam" },
-  { name: "Deleted Items", path: "/UserProfile/deleteditems" },
+  { name: "Drafts", path: "/UserProfile/Drafts" },
+  { name: "Sent", path: "/UserProfile/Sent" },
+  { name: "Archive", path: "/UserProfile/Archive" },
+  { name: "Spam", path: "/UserProfile/Spam" },
+  { name: "Deleted Items", path: "/UserProfile/DeletedItems" },
 ];
 
 const MenuBar = () => {

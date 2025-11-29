@@ -17,23 +17,30 @@ const EmailListing = ({ type, emails }) => {
   const sanitizeEmail = useSanitizeEmail();
 
   const userEmail = useSelector((s) => s.auth.userEmail);
-  const detailedViewHandler = async (mail) => {
+  const detailedViewHandler = async (mail, type) => {
     const sanitizedEmail = sanitizeEmail(userEmail);
 
     navigate(`/UserProfile/email/${mail.id}`);
     dispatch(EmailActions.markAsRead(mail.id));
 
-    await api.patch(`emails/inbox/${sanitizedEmail}/${mail.id}`, {
+    await api.patch(`Emails/Inbox/${sanitizedEmail}/${mail.id}`, {
+      ...mail,
       read: true,
     });
   };
 
-  const starHandler = async (mail) => {
+  const starHandler = async (mail, type) => {
     const sanitizedEmail = sanitizeEmail(userEmail);
 
+    console.log(type, "aaa");
     dispatch(EmailActions.UpdateStar({ id: mail.id, type }));
-
-    await api.patch(`emails/${type}/${sanitizedEmail}/${mail.id}`, {
+    const category = type.includes("Sent")
+      ? "Sent"
+      : type.includes("Inbox")
+      ? "Inbox"
+      : "Drafts";
+    await api.patch(`Emails/${category}/${sanitizedEmail}/${mail.id}`, {
+      ...mail,
       starred: !mail.starred,
     });
   };
@@ -43,36 +50,34 @@ const EmailListing = ({ type, emails }) => {
   return (
     <div className="inbox-container">
       <div className="inbox-header">
-        <h3>{type === "sent" ? "Sent Emails" : "Inbox"}</h3>
+        <h3>{type}</h3>
       </div>
 
       <div className="inbox-list">
         {emails.length === 0 && (
-          <div className="no-emails">
-            {type === "sent" ? "No sent emails." : "No emails"}
-          </div>
+          <div className="no-emails">No emails found!</div>
         )}
 
         {emails.map((mail) => (
           <div
             className="email-row"
             key={mail.id}
-            onClick={() => detailedViewHandler(mail)}
+            onClick={() => detailedViewHandler(mail, type)}
           >
             <div
               className="star-icon"
               onClick={(e) => {
                 e.stopPropagation(); // prevent opening email
-                starHandler(mail);
+                starHandler(mail, type);
               }}
             >
               {mail.starred ? <FaStar /> : <FaRegStar />}
             </div>
             <div className="email-from">
-              {type === "inbox" && !mail.read && (
+              {type === "Inbox" && !mail.read && (
                 <span className="unread-dot"></span>
               )}
-              {type === "inbox" ? mail.from : mail.to}
+              {type === "Inbox" ? mail.from : mail.to}
             </div>
 
             <div className="email-subject">{mail.subject}</div>
@@ -81,14 +86,15 @@ const EmailListing = ({ type, emails }) => {
               {moment(mail.date).format("MMM D")}
             </div>
 
-            <button
+            <div
+              className="delete-icon"
               onClick={(e) => {
                 e.stopPropagation();
                 deleteEmail(userEmail, type, mail.id);
               }}
             >
               <MdDeleteOutline />
-            </button>
+            </div>
           </div>
         ))}
       </div>

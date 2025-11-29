@@ -10,13 +10,17 @@ export const useDeleteEmail = () => {
 
   const deleteEmail = async (userEmail, type, id) => {
     const sanitized = sanitizeEmail(userEmail);
-
-    await api.remove(`emails/${type}/${sanitized}/${id}`);
+    const category = type.includes("Sent")
+      ? "sent"
+      : type.includes("Inbox")
+      ? "inbox"
+      : "drafts";
+    await api.remove(`Emails/${category}/${sanitized}/${id}`);
 
     // 🔥 Update Redux immediately
-    if (type === "inbox") {
+    if (type === "Inbox") {
       dispatch(EmailActions.deleteEmail(id));
-    } else if (type === "sent") {
+    } else if (type.includes === "Sent") {
       dispatch(EmailActions.deleteSentEmail(id));
     }
   };

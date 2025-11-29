@@ -4,9 +4,9 @@ import { useSanitizeEmail } from "./useSanitizeEmail";
 import { useSelector, useDispatch } from "react-redux";
 import { EmailActions } from "../Redux store/EmailSlice";
 
-export const useFetchSent = () => {
+export const useFetchDraft = () => {
   const dispatch = useDispatch();
-  const emails = useSelector((state) => state.email.sent);
+  const emails = useSelector((state) => state.email.drafts);
   const userEmail = useSelector((state) => state.auth.userEmail);
 
   const api = useEmailApi();
@@ -20,17 +20,16 @@ export const useFetchSent = () => {
       setLoading(true);
 
       const sanitized = sanitizeEmail(userEmail);
-      const data = await api.get(`Emails/Sent/${sanitized}`);
+      const data = await api.get(`Emails/Drafts/${sanitized}`);
 
-      const sentArray = data
+      const draftArray = data
         ? Object.keys(data).map((id) => ({ id, ...data[id] }))
         : [];
 
-      sentArray.sort(
+      draftArray.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
-
-      dispatch(EmailActions.setSent(sentArray));
+      dispatch(EmailActions.setDrafts(draftArray));
       setLoading(false);
     };
 

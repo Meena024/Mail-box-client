@@ -90,8 +90,26 @@
   font-size: 18px;
   display: flex;
   align-items: center;
+  color: #f4c74e;
 }
 
 .star-icon:hover {
-  color: #f4b400; /* gold hover */
+  color: #f4b400;
+}
+
+.email-row .delete-icon {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  color: #555;
+}
+
+.email-row:hover .delete-icon {
+  opacity: 1;
+  visibility: visible;
+}
+
+.delete-icon:hover {
+  color: #d11a2a; /* red on hover */
 }

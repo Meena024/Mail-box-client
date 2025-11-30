@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { MdDeleteOutline } from "react-icons/md";
 import "./EmailListing.css";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { IoMdCodeDownload } from "react-icons/io";
 import { EmailActions } from "../../../../Redux store/EmailSlice";
 import { useEmailApi } from "../../../../hooks/useEmailApi";
 import { useSanitizeEmail } from "../../../../hooks/useSanitizeEmail";
@@ -64,36 +65,53 @@ const EmailListing = ({ type, emails }) => {
             key={mail.id}
             onClick={() => detailedViewHandler(mail, type)}
           >
-            <div
-              className="star-icon"
-              onClick={(e) => {
-                e.stopPropagation(); // prevent opening email
-                starHandler(mail, type);
-              }}
-            >
-              {mail.starred ? <FaStar /> : <FaRegStar />}
-            </div>
-            <div className="email-from">
-              {type === "Inbox" && !mail.read && (
+            <div className="left-section">
+              <div
+                className="star-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  starHandler(mail, type);
+                }}
+              >
+                {mail.starred ? <FaStar /> : <FaRegStar />}
+              </div>
+
+              {type.includes("Inbox") && !mail.read && (
                 <span className="unread-dot"></span>
               )}
-              {type === "Inbox" ? mail.from : mail.to}
+              <div className="email-from">
+                {type === "Inbox" ? mail.from : mail.to}
+              </div>
             </div>
 
             <div className="email-subject">{mail.subject}</div>
 
-            <div className="email-date">
-              {moment(mail.date).format("MMM D")}
-            </div>
+            <div className="right-side">
+              <div className="email-date">
+                {moment(mail.date).format("MMM D")}
+              </div>
 
-            <div
-              className="delete-icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteEmail(userEmail, type, mail.id);
-              }}
-            >
-              <MdDeleteOutline />
+              <div className="email-actions">
+                <div
+                  className="delete-icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteEmail(userEmail, type, mail.id);
+                  }}
+                >
+                  <MdDeleteOutline />
+                </div>
+
+                <div
+                  className="archive-icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("archive");
+                  }}
+                >
+                  <IoMdCodeDownload />
+                </div>
+              </div>
             </div>
           </div>
         ))}

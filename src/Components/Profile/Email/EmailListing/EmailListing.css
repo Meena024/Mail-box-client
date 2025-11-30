@@ -1,115 +1,141 @@
+/* CONTAINER */
 .inbox-container {
   padding: 20px;
   background: #f2f2f2;
   border-radius: 8px;
   width: 98%;
-  box-sizing: border-box;
   margin-top: 20px;
 }
 
-.inbox-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.inbox-header h3 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-}
-
+/* LIST */
 .inbox-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 5px;
 }
 
+/* EMAIL ROW */
 .email-row {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  white-space: none;
   align-items: center;
+  justify-content: space-between; /* left | subject | right */
+  gap: 10px;
   padding: 12px 15px;
   background: #e5e6e8;
   border-radius: 6px;
-  border: 1px solid transparent;
-  transition: 0.2s ease;
   cursor: pointer;
-  min-width: 400px;
+  white-space: nowrap;
+  transition: 0.2s ease;
 }
 
 .email-row:hover {
   background: #eef2ff;
-  border-color: #d0d7ff;
 }
 
+/* LEFT SECTION: star + dot + from */
+.left-section {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  width: 180px; /* fixes wrapping, like Gmail */
+  overflow: hidden;
+}
+
+.star-icon {
+  padding: 2px;
+  font-size: 18px;
+  color: #f4c74e;
+  flex-shrink: 0;
+}
+
+/* UNREAD DOT */
 .unread-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background: var(--contrast-color);
   border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
+  flex-shrink: 0;
 }
 
+/* EMAIL FROM */
 .email-from {
   font-weight: bold;
   color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
+/* SUBJECT */
 .email-subject {
+  flex: 1; /* grow */
+  min-width: 0; /* allow ellipsis */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: #444;
   font-size: 15px;
 }
 
-.email-date {
-  text-align: right;
-  font-size: 14px;
-  color: #666;
-}
-
-.no-emails {
-  padding: 20px;
-  text-align: center;
-  font-size: 16px;
-  color: #666;
-}
-
-.inbox-loading {
-  padding: 15px;
-  font-size: 18px;
-  text-align: center;
-}
-
-.star-icon {
-  cursor: pointer;
-  padding: 5px;
-  font-size: 18px;
+/* RIGHT SIDE: date + icons */
+.right-side {
   display: flex;
   align-items: center;
-  color: #f4c74e;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
-.star-icon:hover {
-  color: #f4b400;
+/* DATE */
+.email-date {
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #666;
+  font-size: 14px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.email-row .delete-icon {
+/* ACTION ICONS */
+.email-actions {
+  display: flex;
+  gap: 8px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease;
-  cursor: pointer;
-  color: #555;
+  flex-shrink: 0;
 }
 
-.email-row:hover .delete-icon {
+.email-row:hover .email-actions {
   opacity: 1;
   visibility: visible;
 }
 
+/* DELETE + ARCHIVE ICONS */
+.delete-icon,
+.archive-icon {
+  background: #d3d3d3;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #555;
+}
+
 .delete-icon:hover {
-  color: #d11a2a; /* red on hover */
+  color: #d11a2a;
+}
+
+.archive-icon:hover {
+  color: #0070f3;
+}
+
+/* EMPTY STATE */
+.no-emails {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
 }
